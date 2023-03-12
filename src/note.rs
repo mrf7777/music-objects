@@ -3,7 +3,7 @@ use crate::pitch;
 pub type Duration = ();
 pub type Velocity = i8;
 
-#[derive()]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Note {
     pitch: pitch::NotePitch,
     duration: Duration,

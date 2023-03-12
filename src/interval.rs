@@ -15,7 +15,7 @@ pub enum Direction {
     Down,
 }
 
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct DirectedSemitoneInterval {
     pub interval: SemitoneInterval,
     pub direction: Direction,

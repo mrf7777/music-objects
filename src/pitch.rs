@@ -6,7 +6,7 @@ trait ToPitch {
     fn to_pitch(&self) -> Pitch;
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
 pub enum NotePitchClass {
     C = 0,
     Cs = 1,
@@ -22,7 +22,7 @@ pub enum NotePitchClass {
     B = 11,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct NotePitch {
     pub class: NotePitchClass,
     pub octave: interval::Octave,

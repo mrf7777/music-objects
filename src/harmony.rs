@@ -2,12 +2,12 @@ use std::collections::HashSet;
 
 use crate::pitch;
 
-#[derive()]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct ChordClass {
     notes: HashSet<pitch::NotePitchClass>,
 }
 
-#[derive()]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct RootedChordClass {
     chord_class: ChordClass,
     root: pitch::NotePitch,

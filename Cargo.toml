@@ -2,3 +2,6 @@
 name = "music-objects"
 version = "0.1.0"
 edition = "2021"
+description = "A library that provides a comprehensive set of musical objects for western music."
+license = "MIT"
+keywords = ["music", "western-music"]

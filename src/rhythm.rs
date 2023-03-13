@@ -152,9 +152,9 @@ pub struct Metre {
 }
 
 impl Metre {
-    pub fn new(beat: Rhythm, time_signature: TimeSignature) -> Self {
+    pub fn new(rhythm: Rhythm, time_signature: TimeSignature) -> Self {
         Self {
-            rhythm: beat,
+            rhythm,
             time_signature,
         }
     }

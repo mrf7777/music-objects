@@ -85,12 +85,12 @@ impl Duration {
 }
 
 #[derive(Clone, PartialEq, Debug)]
-pub struct Beat {
+pub struct Rhythm {
     tempo: Tempo,
     beat_assignment: BeatAssignment,
 }
 
-impl Beat {
+impl Rhythm {
     pub fn new(tempo: Tempo, beat_assignment: BeatAssignment) -> Self {
         Self {
             tempo,
@@ -109,20 +109,20 @@ impl Beat {
 
 #[derive(Clone, PartialEq, Debug)]
 pub struct Metre {
-    beat: Beat,
+    rhythm: Rhythm,
     time_signature: TimeSignature,
 }
 
 impl Metre {
-    pub fn new(beat: Beat, time_signature: TimeSignature) -> Self {
+    pub fn new(beat: Rhythm, time_signature: TimeSignature) -> Self {
         Self {
-            beat,
+            rhythm: beat,
             time_signature,
         }
     }
 
-    pub fn beat(&self) -> &Beat {
-        &self.beat
+    pub fn beat(&self) -> &Rhythm {
+        &self.rhythm
     }
 
     pub fn time_signature(&self) -> &TimeSignature {

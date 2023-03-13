@@ -22,10 +22,24 @@ pub enum NotePitchClass {
     B = 11,
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug)]
 pub struct NotePitch {
-    pub class: NotePitchClass,
-    pub octave: interval::Octave,
+    class: NotePitchClass,
+    octave: interval::Octave,
+}
+
+impl NotePitch {
+    pub fn new(class: NotePitchClass, octave: interval::Octave) -> Self {
+        Self { class, octave }
+    }
+
+    pub fn class(&self) -> NotePitchClass {
+        self.class
+    }
+
+    pub fn octave(&self) -> interval::Octave {
+        self.octave
+    }
 }
 
 impl ToPitch for NotePitch {

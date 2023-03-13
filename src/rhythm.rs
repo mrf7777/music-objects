@@ -129,3 +129,15 @@ impl Metre {
         &self.time_signature
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn tempo_bpm_bps() {
+        let tempo1 = Tempo::new(120.0).unwrap();
+        assert!((tempo1.tempo_bpm() - 120.00).abs() < 0.05);
+        assert!((tempo1.tempo_bps() - 2.00).abs() < 0.05);
+    }
+}

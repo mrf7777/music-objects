@@ -20,6 +20,7 @@ impl Note {
     pub fn note_pitch(&self) -> &pitch::NotePitch {
         &self.note_pitch
     }
+
     pub fn duration(&self) -> &rhythm::Duration {
         &self.duration
     }

@@ -3,7 +3,7 @@ use crate::interval;
 type Pitch = f64;
 
 trait ToPitch {
-    fn to_pitch(&self) -> Pitch;
+    fn to_pitch(&self) -> Option<Pitch>;
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
@@ -43,19 +43,18 @@ impl NotePitch {
 }
 
 impl ToPitch for NotePitch {
-    fn to_pitch(&self) -> Pitch {
+    fn to_pitch(&self) -> Option<Pitch> {
         let semitones_from_a4 = interval::DirectedSemitoneInterval::from_note_pitches(
             &NotePitch {
                 class: NotePitchClass::A,
                 octave: 4,
             },
             self,
-        )
-        .unwrap()
+        )?
         .directional_semitones();
 
         // https://pages.mtu.edu/~suits/NoteFreqCalcs.html
-        A4_PITCH * EQUAL_TEMPERED_SEMITONE_FACTOR.powi(semitones_from_a4.into())
+        Some(A4_PITCH * EQUAL_TEMPERED_SEMITONE_FACTOR.powi(semitones_from_a4.into()))
     }
 }
 
@@ -74,19 +73,19 @@ mod tests {
             class: NotePitchClass::A,
             octave: 4,
         };
-        assert!((a440.to_pitch() - 440.00).abs() < 0.05);
+        assert!((a440.to_pitch().unwrap() - 440.00).abs() < 0.05);
 
         let a220 = NotePitch {
             class: NotePitchClass::A,
             octave: 3,
         };
-        assert!((a220.to_pitch() - 220.00).abs() < 0.05);
+        assert!((a220.to_pitch().unwrap() - 220.00).abs() < 0.05);
 
         let a880 = NotePitch {
             class: NotePitchClass::A,
             octave: 5,
         };
-        assert!((a880.to_pitch() - 880.00).abs() < 0.05);
+        assert!((a880.to_pitch().unwrap() - 880.00).abs() < 0.05);
     }
 
     #[test]
@@ -95,18 +94,18 @@ mod tests {
             class: NotePitchClass::C,
             octave: 4,
         };
-        assert!((c4.to_pitch() - 261.63).abs() < 0.05);
+        assert!((c4.to_pitch().unwrap() - 261.63).abs() < 0.05);
 
         let c3 = NotePitch {
             class: NotePitchClass::C,
             octave: 3,
         };
-        assert!((c3.to_pitch() - 130.81).abs() < 0.05);
+        assert!((c3.to_pitch().unwrap() - 130.81).abs() < 0.05);
 
         let gs8 = NotePitch {
             class: NotePitchClass::Gs,
             octave: 8,
         };
-        assert!((gs8.to_pitch() - 6644.88).abs() < 0.05);
+        assert!((gs8.to_pitch().unwrap() - 6644.88).abs() < 0.05);
     }
 }

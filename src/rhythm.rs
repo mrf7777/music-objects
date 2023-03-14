@@ -102,6 +102,12 @@ impl Duration {
         })
     }
 
+    pub fn new_from_time_signature(time_signature: TimeSignature) -> Self {
+        Self {
+            signature: time_signature,
+        }
+    }
+
     pub fn numerator(&self) -> u16 {
         self.signature.numerator()
     }
@@ -165,6 +171,12 @@ impl Metre {
 
     pub fn time_signature(&self) -> &TimeSignature {
         &self.time_signature
+    }
+
+    pub fn bars_from_duration(&self, duration: &Duration) -> f64 {
+        let bar_duration = Duration::new_from_time_signature(self.time_signature().clone());
+        let seconds_per_bar = self.rhythm.seconds_from_duration(&bar_duration);
+        self.rhythm.seconds_from_duration(duration) / seconds_per_bar
     }
 }
 

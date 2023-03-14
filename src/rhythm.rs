@@ -140,7 +140,7 @@ impl Rhythm {
     }
 
     pub fn seconds_from_duration(&self, duration: &Duration) -> f64 {
-        let beats_in_duration = self.beat_assignment().beats_in_duration(duration); // TODO:
+        let beats_in_duration = self.beat_assignment().beats_in_duration(duration);
         beats_in_duration * self.tempo.one_beat_seconds()
     }
 }
@@ -177,5 +177,33 @@ mod tests {
         let tempo1 = Tempo::new(120.0).unwrap();
         assert!((tempo1.bpm() - 120.00).abs() < 0.05);
         assert!((tempo1.bps() - 2.00).abs() < 0.05);
+    }
+
+    #[test]
+    fn rhythm_and_duration_seconds() {
+        let tempo1 = Tempo::new(120.0).unwrap();
+        let beat_assignment1 = BeatAssignment::new(Duration::new(1, 4).unwrap());
+        let beat_assignment2 = BeatAssignment::new(Duration::new(2, 4).unwrap());
+        let rhythm1 = Rhythm::new(tempo1.clone(), beat_assignment1.clone());
+        let rhythm2 = Rhythm::new(tempo1.clone(), beat_assignment2.clone());
+
+        assert!(
+            (rhythm1.seconds_from_duration(beat_assignment1.beat_duration()) - 0.5).abs() < 0.05
+        );
+        assert!(
+            (rhythm2.seconds_from_duration(beat_assignment2.beat_duration()) - 0.5).abs() < 0.05
+        );
+
+        let duration1 = Duration::new(1, 4).unwrap();
+        let duration2 = Duration::new(2, 8).unwrap();
+        let duration3 = Duration::new(2, 4).unwrap();
+        let duration4 = Duration::new(9, 4).unwrap();
+        let duration5 = Duration::new(1, 6).unwrap();
+
+        assert!((rhythm1.seconds_from_duration(&duration1) - 0.5).abs() < 0.05);
+        assert!((rhythm1.seconds_from_duration(&duration2) - 0.5).abs() < 0.05);
+        assert!((rhythm1.seconds_from_duration(&duration3) - 1.0).abs() < 0.05);
+        assert!((rhythm1.seconds_from_duration(&duration4) - 4.5).abs() < 0.05);
+        assert!((rhythm1.seconds_from_duration(&duration5) - 0.33333).abs() < 0.05);
     }
 }

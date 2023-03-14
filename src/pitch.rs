@@ -2,8 +2,17 @@ use crate::interval;
 
 type Pitch = f64;
 
+#[derive(Clone, Copy, PartialEq, Debug)]
+enum TuningSystem {
+    EqualTempered,
+}
+
 trait ToPitch {
-    fn to_pitch(&self) -> Option<Pitch>;
+    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Option<Pitch>;
+
+    fn to_pitch(&self) -> Option<Pitch> {
+        self.to_pitch_using_tuning(TuningSystem::EqualTempered)
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
@@ -43,18 +52,22 @@ impl NotePitch {
 }
 
 impl ToPitch for NotePitch {
-    fn to_pitch(&self) -> Option<Pitch> {
-        let semitones_from_a4 = interval::DirectedSemitoneInterval::from_note_pitches(
-            &NotePitch {
-                class: NotePitchClass::A,
-                octave: 4,
-            },
-            self,
-        )?
-        .directional_semitones();
+    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Option<Pitch> {
+        match tuning {
+            TuningSystem::EqualTempered => {
+                let semitones_from_a4 = interval::DirectedSemitoneInterval::from_note_pitches(
+                    &NotePitch {
+                        class: NotePitchClass::A,
+                        octave: 4,
+                    },
+                    self,
+                )?
+                .directional_semitones();
 
-        // https://pages.mtu.edu/~suits/NoteFreqCalcs.html
-        Some(A4_PITCH * EQUAL_TEMPERED_SEMITONE_FACTOR.powi(semitones_from_a4.into()))
+                // https://pages.mtu.edu/~suits/NoteFreqCalcs.html
+                Some(A4_PITCH * EQUAL_TEMPERED_SEMITONE_FACTOR.powi(semitones_from_a4.into()))
+            }
+        }
     }
 }
 

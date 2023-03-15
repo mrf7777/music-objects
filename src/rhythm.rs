@@ -12,6 +12,7 @@ pub struct TimeSignature {
 }
 
 impl TimeSignature {
+    #[must_use]
     pub fn new(numerator: u16, denominator: u16) -> Option<Self> {
         if numerator == 0 || denominator == 0 {
             return None;
@@ -23,10 +24,12 @@ impl TimeSignature {
         })
     }
 
+    #[must_use]
     pub fn numerator(&self) -> u16 {
         self.numerator
     }
 
+    #[must_use]
     pub fn denominator(&self) -> u16 {
         self.denominator
     }
@@ -34,7 +37,7 @@ impl TimeSignature {
 
 impl ToRatio for TimeSignature {
     fn to_ratio(&self) -> f64 {
-        self.numerator as f64 / self.denominator as f64
+        f64::from(self.numerator) / f64::from(self.denominator)
     }
 }
 
@@ -44,6 +47,7 @@ pub struct Tempo {
 }
 
 impl Tempo {
+    #[must_use]
     pub fn new(tempo_bpm: f64) -> Option<Self> {
         if tempo_bpm < 0.0 {
             return None;
@@ -52,14 +56,17 @@ impl Tempo {
         Some(Self { tempo_bpm })
     }
 
+    #[must_use]
     pub fn bpm(&self) -> f64 {
         self.tempo_bpm
     }
 
+    #[must_use]
     pub fn bps(&self) -> f64 {
         self.tempo_bpm / 60.0
     }
 
+    #[must_use]
     pub fn one_beat_seconds(&self) -> f64 {
         1.0 / self.bps()
     }
@@ -71,14 +78,17 @@ pub struct BeatAssignment {
 }
 
 impl BeatAssignment {
+    #[must_use]
     pub fn new(duration: Duration) -> Self {
         Self { duration }
     }
 
+    #[must_use]
     pub fn beat_duration(&self) -> &Duration {
         &self.duration
     }
 
+    #[must_use]
     pub fn beats_in_duration(&self, duration: &Duration) -> f64 {
         let beat_assignment_ratio = self.beat_duration().to_ratio();
         let duration_ratio = duration.to_ratio();
@@ -98,22 +108,26 @@ pub struct Duration {
 }
 
 impl Duration {
+    #[must_use]
     pub fn new(numerator: u16, denominator: u16) -> Option<Self> {
         Some(Self {
             signature: TimeSignature::new(numerator, denominator)?,
         })
     }
 
+    #[must_use]
     pub fn new_from_time_signature(time_signature: TimeSignature) -> Self {
         Self {
             signature: time_signature,
         }
     }
 
+    #[must_use]
     pub fn numerator(&self) -> u16 {
         self.signature.numerator()
     }
 
+    #[must_use]
     pub fn denominator(&self) -> u16 {
         self.signature.denominator()
     }
@@ -132,6 +146,7 @@ pub struct Rhythm {
 }
 
 impl Rhythm {
+    #[must_use]
     pub fn new(tempo: Tempo, beat_assignment: BeatAssignment) -> Self {
         Self {
             tempo,
@@ -139,14 +154,17 @@ impl Rhythm {
         }
     }
 
+    #[must_use]
     pub fn tempo(&self) -> &Tempo {
         &self.tempo
     }
 
+    #[must_use]
     pub fn beat_assignment(&self) -> &BeatAssignment {
         &self.beat_assignment
     }
 
+    #[must_use]
     pub fn seconds_from_duration(&self, duration: &Duration) -> f64 {
         let beats_in_duration = self.beat_assignment().beats_in_duration(duration);
         beats_in_duration * self.tempo.one_beat_seconds()
@@ -160,6 +178,7 @@ pub struct Metre {
 }
 
 impl Metre {
+    #[must_use]
     pub fn new(rhythm: Rhythm, time_signature: TimeSignature) -> Self {
         Self {
             rhythm,
@@ -167,14 +186,17 @@ impl Metre {
         }
     }
 
+    #[must_use]
     pub fn beat(&self) -> &Rhythm {
         &self.rhythm
     }
 
+    #[must_use]
     pub fn time_signature(&self) -> &TimeSignature {
         &self.time_signature
     }
 
+    #[must_use]
     pub fn bars_from_duration(&self, duration: &Duration) -> f64 {
         let bar_duration = Duration::new_from_time_signature(self.time_signature().clone());
         let seconds_per_bar = self.rhythm.seconds_from_duration(&bar_duration);
@@ -199,7 +221,7 @@ mod tests {
         let beat_assignment1 = BeatAssignment::new(Duration::new(1, 4).unwrap());
         let beat_assignment2 = BeatAssignment::new(Duration::new(2, 4).unwrap());
         let rhythm1 = Rhythm::new(tempo1.clone(), beat_assignment1.clone());
-        let rhythm2 = Rhythm::new(tempo1.clone(), beat_assignment2.clone());
+        let rhythm2 = Rhythm::new(tempo1, beat_assignment2.clone());
 
         assert!(
             (rhythm1.seconds_from_duration(beat_assignment1.beat_duration()) - 0.5).abs() < 0.05

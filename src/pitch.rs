@@ -1,4 +1,4 @@
-#![warn(clippy::all, clippy::pedantic, clippy::cargo)]
+#![deny(clippy::all, clippy::pedantic)]
 
 use crate::interval;
 
@@ -36,21 +36,24 @@ pub enum NotePitchClass {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
+#[allow(clippy::module_name_repetitions)]
 pub struct NotePitch {
     class: NotePitchClass,
     octave: interval::Octave,
 }
 
-#[allow(clippy::module_name_repetitions)]
 impl NotePitch {
+    #[must_use]
     pub fn new(class: NotePitchClass, octave: interval::Octave) -> Self {
         Self { class, octave }
     }
 
+    #[must_use]
     pub fn class(&self) -> NotePitchClass {
         self.class
     }
 
+    #[must_use]
     pub fn octave(&self) -> interval::Octave {
         self.octave
     }

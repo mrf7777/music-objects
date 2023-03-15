@@ -1,3 +1,5 @@
+#![deny(clippy::all, clippy::pedantic)]
+
 use crate::pitch;
 
 pub type Semitones = u16;
@@ -5,15 +7,18 @@ pub type DirectionalSemitones = i32;
 pub type Octave = i8;
 
 #[derive(Clone, PartialEq, Eq, Debug)]
+#[allow(clippy::module_name_repetitions)]
 pub struct SemitoneInterval {
     semitones: Semitones,
 }
 
 impl SemitoneInterval {
+    #[must_use]
     pub fn new(semitones: Semitones) -> Self {
         Self { semitones }
     }
 
+    #[must_use]
     pub fn semitones(&self) -> Semitones {
         self.semitones
     }
@@ -26,12 +31,14 @@ pub enum Direction {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
+#[allow(clippy::module_name_repetitions)]
 pub struct DirectedSemitoneInterval {
     interval: SemitoneInterval,
     direction: Direction,
 }
 
 impl DirectedSemitoneInterval {
+    #[must_use]
     pub fn from_note_pitches(
         n1: &pitch::NotePitch,
         n2: &pitch::NotePitch,
@@ -52,6 +59,7 @@ impl DirectedSemitoneInterval {
         }
     }
 
+    #[must_use]
     pub fn directional_semitones(&self) -> DirectionalSemitones {
         match self.direction {
             Direction::Up => DirectionalSemitones::from(self.interval.semitones),
@@ -59,10 +67,12 @@ impl DirectedSemitoneInterval {
         }
     }
 
+    #[must_use]
     pub fn interval(&self) -> &SemitoneInterval {
         &self.interval
     }
 
+    #[must_use]
     pub fn direction(&self) -> Direction {
         self.direction
     }

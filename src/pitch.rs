@@ -35,7 +35,7 @@ pub enum NotePitchClass {
     B = 11,
 }
 
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug, Hash)]
 #[allow(clippy::module_name_repetitions)]
 pub struct NotePitch {
     class: NotePitchClass,

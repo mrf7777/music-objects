@@ -4,9 +4,10 @@ use crate::interval;
 
 pub type Pitch = f64;
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+#[derive(Clone, Copy, PartialEq, Default, Debug)]
 #[allow(clippy::derive_partial_eq_without_eq)]
 pub enum TuningSystem {
+    #[default]
     EqualTempered,
 }
 

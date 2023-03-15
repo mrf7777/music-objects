@@ -113,6 +113,12 @@ impl Tempo {
     }
 }
 
+impl Default for Tempo {
+    fn default() -> Self {
+        Self::new(120.0).unwrap()
+    }
+}
+
 #[derive(Clone, PartialEq, Eq, Debug, PartialOrd, Ord)]
 pub struct BeatAssignment {
     duration: Duration,

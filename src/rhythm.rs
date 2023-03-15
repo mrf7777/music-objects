@@ -40,7 +40,30 @@ impl ToRatio for TimeSignature {
     }
 }
 
-#[derive(Clone, PartialEq, Debug)]
+impl PartialOrd for TimeSignature {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for TimeSignature {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        // numerator and denominator are non-zero
+        // ratios will always be non-NAN
+        let other_ratio = other.to_ratio();
+        let self_ratio = self.to_ratio();
+
+        if self_ratio < other_ratio {
+            std::cmp::Ordering::Less
+        } else if self_ratio > other_ratio {
+            std::cmp::Ordering::Greater
+        } else {
+            std::cmp::Ordering::Equal
+        }
+    }
+}
+
+#[derive(Clone, Copy, PartialEq, Debug, PartialOrd)]
 pub struct Tempo {
     tempo_bpm: f64,
 }
@@ -71,7 +94,7 @@ impl Tempo {
     }
 }
 
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug, PartialOrd, Ord)]
 pub struct BeatAssignment {
     duration: Duration,
 }
@@ -101,7 +124,7 @@ impl ToRatio for BeatAssignment {
     }
 }
 
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug, PartialOrd, Ord)]
 pub struct Duration {
     signature: TimeSignature,
 }

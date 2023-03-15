@@ -5,7 +5,6 @@ pub trait ToRatio {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
-
 pub struct TimeSignature {
     numerator: u16,
     denominator: u16,

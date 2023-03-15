@@ -1,3 +1,5 @@
+#![deny(clippy::all, clippy::pedantic)]
+
 pub trait ToRatio {
     fn to_ratio(&self) -> f64;
 }

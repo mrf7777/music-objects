@@ -1,13 +1,17 @@
+#![warn(clippy::all, clippy::pedantic, clippy::cargo)]
+
 use crate::interval;
 
-type Pitch = f64;
+pub type Pitch = f64;
 
 #[derive(Clone, Copy, PartialEq, Debug)]
-enum TuningSystem {
+#[allow(clippy::derive_partial_eq_without_eq)]
+pub enum TuningSystem {
     EqualTempered,
 }
 
-trait ToPitch {
+#[allow(clippy::module_name_repetitions)]
+pub trait ToPitch {
     fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Option<Pitch>;
 
     fn to_pitch(&self) -> Option<Pitch> {
@@ -37,6 +41,7 @@ pub struct NotePitch {
     octave: interval::Octave,
 }
 
+#[allow(clippy::module_name_repetitions)]
 impl NotePitch {
     pub fn new(class: NotePitchClass, octave: interval::Octave) -> Self {
         Self { class, octave }
@@ -74,7 +79,7 @@ impl ToPitch for NotePitch {
 const A4_PITCH: f64 = 440.0;
 
 // https://pages.mtu.edu/~suits/NoteFreqCalcs.html
-const EQUAL_TEMPERED_SEMITONE_FACTOR: f64 = 1.05946309436;
+const EQUAL_TEMPERED_SEMITONE_FACTOR: f64 = 1.059_463_094_36;
 
 #[cfg(test)]
 mod tests {

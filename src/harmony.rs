@@ -10,11 +10,11 @@ pub struct ChordClass {
 }
 
 impl ChordClass {
-    pub fn new(note_pitch_classes: HashSet<pitch::NotePitchClass>) -> Self {
+    #[must_use] pub fn new(note_pitch_classes: HashSet<pitch::NotePitchClass>) -> Self {
         Self { note_pitch_classes }
     }
 
-    pub fn note_pitch_classes(&self) -> &HashSet<pitch::NotePitchClass> {
+    #[must_use] pub fn note_pitch_classes(&self) -> &HashSet<pitch::NotePitchClass> {
         &self.note_pitch_classes
     }
 }
@@ -26,15 +26,15 @@ pub struct RootedChordClass {
 }
 
 impl RootedChordClass {
-    pub fn new(chord_class: ChordClass, root: pitch::NotePitchClass) -> Self {
+    #[must_use] pub fn new(chord_class: ChordClass, root: pitch::NotePitchClass) -> Self {
         Self { chord_class, root }
     }
 
-    pub fn chord_class(&self) -> &ChordClass {
+    #[must_use] pub fn chord_class(&self) -> &ChordClass {
         &self.chord_class
     }
 
-    pub fn root(&self) -> pitch::NotePitchClass {
+    #[must_use] pub fn root(&self) -> pitch::NotePitchClass {
         self.root
     }
 }
@@ -45,11 +45,11 @@ pub struct Chord {
 }
 
 impl Chord {
-    pub fn new(note_pitches: HashSet<pitch::NotePitch>) -> Self {
+    #[must_use] pub fn new(note_pitches: HashSet<pitch::NotePitch>) -> Self {
         Self { note_pitches }
     }
 
-    pub fn note_pitchs(&self) -> &HashSet<pitch::NotePitch> {
+    #[must_use] pub fn note_pitchs(&self) -> &HashSet<pitch::NotePitch> {
         &self.note_pitches
     }
 }
@@ -61,15 +61,15 @@ pub struct RootedChord {
 }
 
 impl RootedChord {
-    pub fn new(chord: Chord, root: pitch::NotePitch) -> Self {
+    #[must_use] pub fn new(chord: Chord, root: pitch::NotePitch) -> Self {
         Self { chord, root }
     }
 
-    pub fn chord(&self) -> &Chord {
+    #[must_use] pub fn chord(&self) -> &Chord {
         &self.chord
     }
 
-    pub fn root(&self) -> pitch::NotePitch {
+    #[must_use] pub fn root(&self) -> pitch::NotePitch {
         self.root
     }
 }

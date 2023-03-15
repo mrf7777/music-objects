@@ -4,7 +4,7 @@ pub trait ToRatio {
     fn to_ratio(&self) -> f64;
 }
 
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, Debug)]
 pub struct TimeSignature {
     numerator: u16,
     denominator: u16,
@@ -39,6 +39,14 @@ impl ToRatio for TimeSignature {
         f64::from(self.numerator) / f64::from(self.denominator)
     }
 }
+
+impl PartialEq for TimeSignature {
+    fn eq(&self, other: &Self) -> bool {
+        self.cmp(other) == std::cmp::Ordering::Equal
+    }
+}
+
+impl Eq for TimeSignature {}
 
 impl PartialOrd for TimeSignature {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
@@ -263,5 +271,30 @@ mod tests {
         assert!((rhythm1.seconds_from_duration(&duration3) - 1.0).abs() < 0.05);
         assert!((rhythm1.seconds_from_duration(&duration4) - 4.5).abs() < 0.05);
         assert!((rhythm1.seconds_from_duration(&duration5) - 0.33333).abs() < 0.05);
+    }
+
+    #[test]
+    fn rhythm_order() {
+        let duration1 = Duration::new(1, 4);
+        let duration2 = Duration::new(1, 3);
+        let duration3 = Duration::new(100, 3);
+        let duration4 = Duration::new(2, 8);
+        let duration5 = Duration::new(2, 6);
+
+        assert!(duration1 < duration2);
+        assert!(duration2 > duration1);
+        assert!(duration1 == duration1);
+        assert!(duration1 != duration2);
+
+        assert!(duration1 == duration4);
+        assert!(duration2 == duration5);
+        assert!(duration1 < duration5);
+        assert!(duration5 > duration1);
+
+        assert!(duration3 > duration1);
+        assert!(duration3 > duration2);
+        assert!(!(duration3 > duration3));
+        assert!(duration3 > duration4);
+        assert!(duration3 > duration5)
     }
 }

@@ -1,18 +1,14 @@
 #![deny(clippy::all, clippy::pedantic)]
 
-pub trait ToRatio {
-    fn to_ratio(&self) -> f64;
-}
-
 #[derive(Clone, Debug)]
-pub struct TimeSignature {
-    numerator: u16,
-    denominator: u16,
+pub struct Ratio {
+    numerator: u32,
+    denominator: u32,
 }
 
-impl TimeSignature {
+impl Ratio {
     #[must_use]
-    pub fn new(numerator: u16, denominator: u16) -> Option<Self> {
+    pub fn new(numerator: u32, denominator: u32) -> Option<Self> {
         if numerator == 0 || denominator == 0 {
             return None;
         }
@@ -24,42 +20,40 @@ impl TimeSignature {
     }
 
     #[must_use]
-    pub fn numerator(&self) -> u16 {
+    pub fn numerator(&self) -> u32 {
         self.numerator
     }
 
     #[must_use]
-    pub fn denominator(&self) -> u16 {
+    pub fn denominator(&self) -> u32 {
         self.denominator
     }
-}
 
-impl ToRatio for TimeSignature {
-    fn to_ratio(&self) -> f64 {
-        f64::from(self.numerator) / f64::from(self.denominator)
+    #[must_use]
+    pub fn to_f64(&self) -> f64 {
+        f64::from(self.numerator()) / f64::from(self.denominator())
     }
 }
 
-impl PartialEq for TimeSignature {
+impl PartialEq for Ratio {
     fn eq(&self, other: &Self) -> bool {
         self.cmp(other) == std::cmp::Ordering::Equal
     }
 }
 
-impl Eq for TimeSignature {}
+impl Eq for Ratio {}
 
-impl PartialOrd for TimeSignature {
+impl PartialOrd for Ratio {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl Ord for TimeSignature {
+impl Ord for Ratio {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         // numerator and denominator are non-zero
-        // ratios will always be non-NAN
-        let other_ratio = other.to_ratio();
-        let self_ratio = self.to_ratio();
+        let other_ratio = other.to_f64();
+        let self_ratio = self.to_f64();
 
         if self_ratio < other_ratio {
             std::cmp::Ordering::Less
@@ -68,6 +62,23 @@ impl Ord for TimeSignature {
         } else {
             std::cmp::Ordering::Equal
         }
+    }
+}
+
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub struct TimeSignature {
+    ratio: Ratio,
+}
+
+impl TimeSignature {
+    #[must_use]
+    pub fn new(ratio: Ratio) -> Self {
+        Self { ratio }
+    }
+
+    #[must_use]
+    pub fn ratio(&self) -> &Ratio {
+        &self.ratio
     }
 }
 
@@ -120,52 +131,45 @@ impl BeatAssignment {
 
     #[must_use]
     pub fn beats_in_duration(&self, duration: &Duration) -> f64 {
-        let beat_assignment_ratio = self.beat_duration().to_ratio();
-        let duration_ratio = duration.to_ratio();
-        duration_ratio / beat_assignment_ratio
-    }
-}
-
-impl ToRatio for BeatAssignment {
-    fn to_ratio(&self) -> f64 {
-        self.duration.to_ratio()
+        let beat_assignment_ratio = self.beat_duration().ratio();
+        let duration_ratio = duration.ratio();
+        duration_ratio.to_f64() / beat_assignment_ratio.to_f64()
     }
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, PartialOrd, Ord)]
 pub struct Duration {
-    signature: TimeSignature,
+    ratio: Ratio,
 }
 
 impl Duration {
     #[must_use]
-    pub fn new(numerator: u16, denominator: u16) -> Option<Self> {
+    pub fn new(numerator: u32, denominator: u32) -> Option<Self> {
         Some(Self {
-            signature: TimeSignature::new(numerator, denominator)?,
+            ratio: Ratio::new(numerator, denominator)?,
         })
     }
 
     #[must_use]
-    pub fn new_from_time_signature(time_signature: TimeSignature) -> Self {
+    pub fn new_from_ratio(time_signature: Ratio) -> Self {
         Self {
-            signature: time_signature,
+            ratio: time_signature,
         }
     }
 
     #[must_use]
-    pub fn numerator(&self) -> u16 {
-        self.signature.numerator()
+    pub fn numerator(&self) -> u32 {
+        self.ratio.numerator()
     }
 
     #[must_use]
-    pub fn denominator(&self) -> u16 {
-        self.signature.denominator()
+    pub fn denominator(&self) -> u32 {
+        self.ratio.denominator()
     }
-}
 
-impl ToRatio for Duration {
-    fn to_ratio(&self) -> f64 {
-        self.signature.to_ratio()
+    #[must_use]
+    pub fn ratio(&self) -> &Ratio {
+        &self.ratio
     }
 }
 
@@ -228,7 +232,7 @@ impl Metre {
 
     #[must_use]
     pub fn bars_from_duration(&self, duration: &Duration) -> f64 {
-        let bar_duration = Duration::new_from_time_signature(self.time_signature().clone());
+        let bar_duration = Duration::new_from_ratio(self.time_signature().ratio().clone());
         let seconds_per_bar = self.rhythm.seconds_from_duration(&bar_duration);
         self.rhythm.seconds_from_duration(duration) / seconds_per_bar
     }
@@ -250,7 +254,7 @@ mod tests {
         let tempo1 = Tempo::new(120.0).unwrap();
         let beat_assignment1 = BeatAssignment::new(Duration::new(1, 4).unwrap());
         let beat_assignment2 = BeatAssignment::new(Duration::new(2, 4).unwrap());
-        let rhythm1 = Rhythm::new(tempo1.clone(), beat_assignment1.clone());
+        let rhythm1 = Rhythm::new(tempo1, beat_assignment1.clone());
         let rhythm2 = Rhythm::new(tempo1, beat_assignment2.clone());
 
         assert!(
@@ -293,8 +297,8 @@ mod tests {
 
         assert!(duration3 > duration1);
         assert!(duration3 > duration2);
-        assert!(!(duration3 > duration3));
+        assert!(duration3 <= duration3);
         assert!(duration3 > duration4);
-        assert!(duration3 > duration5)
+        assert!(duration3 > duration5);
     }
 }

@@ -73,13 +73,13 @@ impl ToPitch for NotePitch {
                 .directional_semitones();
 
                 // https://pages.mtu.edu/~suits/NoteFreqCalcs.html
-                Some(A4_PITCH * EQUAL_TEMPERED_SEMITONE_FACTOR.powi(semitones_from_a4.into()))
+                Some(A4_PITCH_ISO_16 * EQUAL_TEMPERED_SEMITONE_FACTOR.powi(semitones_from_a4))
             }
         }
     }
 }
 
-const A4_PITCH: f64 = 440.0;
+const A4_PITCH_ISO_16: f64 = 440.0;
 
 // https://pages.mtu.edu/~suits/NoteFreqCalcs.html
 const EQUAL_TEMPERED_SEMITONE_FACTOR: f64 = 1.059_463_094_36;

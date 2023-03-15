@@ -1,7 +1,7 @@
 use crate::pitch;
 
-pub type Semitones = u8;
-pub type DirectionalSemitones = i16;
+pub type Semitones = u16;
+pub type DirectionalSemitones = i32;
 pub type Octave = i8;
 
 #[derive(Clone, PartialEq, Eq, Debug)]
@@ -41,12 +41,12 @@ impl DirectedSemitoneInterval {
         let semis = semis_from_note_pitch_class + semis_from_only_octaves;
         if semis >= 0 {
             Some(Self {
-                interval: SemitoneInterval::new(u8::try_from(semis).ok()?),
+                interval: SemitoneInterval::new(Semitones::try_from(semis).ok()?),
                 direction: Direction::Up,
             })
         } else {
             Some(Self {
-                interval: SemitoneInterval::new(u8::try_from(-semis).ok()?),
+                interval: SemitoneInterval::new(Semitones::try_from(-semis).ok()?),
                 direction: Direction::Down,
             })
         }
@@ -54,8 +54,8 @@ impl DirectedSemitoneInterval {
 
     pub fn directional_semitones(&self) -> DirectionalSemitones {
         match self.direction {
-            Direction::Up => i16::from(self.interval.semitones),
-            Direction::Down => -i16::from(self.interval.semitones),
+            Direction::Up => DirectionalSemitones::from(self.interval.semitones),
+            Direction::Down => -DirectionalSemitones::from(self.interval.semitones),
         }
     }
 

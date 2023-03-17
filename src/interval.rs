@@ -4,7 +4,7 @@ use crate::pitch;
 
 pub type Semitones = u16;
 pub type DirectionalSemitones = i32;
-pub type Octave = i8;
+pub type Octave = i32;
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
 #[allow(clippy::module_name_repetitions)]
@@ -64,8 +64,8 @@ impl DirectedSemitoneInterval {
         n1: &pitch::NotePitch,
         n2: &pitch::NotePitch,
     ) -> Option<DirectedSemitoneInterval> {
-        let semis_from_only_octaves = isize::from((n2.octave() - n1.octave()) * 12);
-        let semis_from_note_pitch_class = n2.class() as isize - n1.class() as isize;
+        let semis_from_only_octaves = (n2.octave() - n1.octave()) * 12;
+        let semis_from_note_pitch_class = n2.class() as i32 - n1.class() as i32;
         let semis = semis_from_note_pitch_class + semis_from_only_octaves;
         if semis >= 0 {
             Some(Self {
@@ -96,6 +96,23 @@ impl DirectedSemitoneInterval {
     #[must_use]
     pub fn direction(&self) -> Direction {
         self.direction
+    }
+
+    pub fn apply_to_note_pitch(&self, note_pitch: &pitch::NotePitch) -> pitch::NotePitch {
+        let total_semitones = self.directional_semitones();
+
+        // get octaves and semitones through division
+        let octaves = total_semitones / 12;
+        let semitones = total_semitones % 12;
+
+        let new_base_octave = note_pitch.octave() + octaves;
+        let new_pitch_class_without_modulo = note_pitch.class() as i32 + semitones;
+
+        let fixed_octave = new_base_octave + (new_pitch_class_without_modulo / 12);
+        let fixed_pitch_class: pitch::NotePitchClass =
+            (new_pitch_class_without_modulo % 12).try_into().unwrap();
+
+        pitch::NotePitch::new(fixed_pitch_class, fixed_octave)
     }
 }
 

@@ -36,6 +36,28 @@ pub enum NotePitchClass {
     B = 11,
 }
 
+impl TryFrom<i32> for NotePitchClass {
+    type Error = ();
+
+    fn try_from(value: i32) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Self::C),
+            1 => Ok(Self::Cs),
+            2 => Ok(Self::D),
+            3 => Ok(Self::Ds),
+            4 => Ok(Self::E),
+            5 => Ok(Self::F),
+            6 => Ok(Self::Fs),
+            7 => Ok(Self::G),
+            8 => Ok(Self::Gs),
+            9 => Ok(Self::A),
+            10 => Ok(Self::As),
+            11 => Ok(Self::B),
+            _ => Err(()),
+        }
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
 #[allow(clippy::module_name_repetitions)]
 pub struct NotePitch {

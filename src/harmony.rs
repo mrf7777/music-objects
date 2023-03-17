@@ -4,7 +4,7 @@ use std::collections::{BTreeSet, HashSet};
 
 use crate::{
     interval::DirectedSemitoneInterval,
-    pitch::{self, NotePitch},
+    pitch::{self},
 };
 
 #[derive(Clone, PartialEq, Eq, Debug)]
@@ -93,11 +93,11 @@ pub struct ChordPattern {
 }
 
 impl ChordPattern {
-    pub fn new(intervals: BTreeSet<DirectedSemitoneInterval>) -> Self {
+    #[must_use] pub fn new(intervals: BTreeSet<DirectedSemitoneInterval>) -> Self {
         Self { intervals }
     }
 
-    pub fn intervals(&self) -> &BTreeSet<DirectedSemitoneInterval> {
+    #[must_use] pub fn intervals(&self) -> &BTreeSet<DirectedSemitoneInterval> {
         &self.intervals
     }
 }

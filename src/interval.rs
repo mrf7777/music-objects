@@ -42,13 +42,7 @@ impl Ord for DirectedSemitoneInterval {
         let self_semis = self.directional_semitones();
         let other_semis = other.directional_semitones();
 
-        if self_semis < other_semis {
-            std::cmp::Ordering::Less
-        } else if self_semis > other_semis {
-            std::cmp::Ordering::Greater
-        } else {
-            std::cmp::Ordering::Equal
-        }
+        self_semis.cmp(&other_semis)
     }
 }
 
@@ -98,7 +92,8 @@ impl DirectedSemitoneInterval {
         self.direction
     }
 
-    pub fn apply_to_note_pitch(&self, note_pitch: &pitch::NotePitch) -> pitch::NotePitch {
+    #[must_use]
+    pub fn apply_to_note_pitch(&self, note_pitch: &pitch::NotePitch) -> Option<pitch::NotePitch> {
         let total_semitones = self.directional_semitones();
 
         // get octaves and semitones through division
@@ -112,7 +107,7 @@ impl DirectedSemitoneInterval {
         let fixed_pitch_class: pitch::NotePitchClass =
             (new_pitch_class_without_modulo % 12).try_into().unwrap();
 
-        pitch::NotePitch::new(fixed_pitch_class, fixed_octave)
+        Some(pitch::NotePitch::new(fixed_pitch_class, fixed_octave))
     }
 }
 

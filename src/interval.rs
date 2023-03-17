@@ -1,5 +1,7 @@
 #![deny(clippy::all, clippy::pedantic)]
 
+use std::num::TryFromIntError;
+
 use crate::pitch;
 
 pub type Semitones = u16;
@@ -57,18 +59,18 @@ impl DirectedSemitoneInterval {
     pub fn from_note_pitches(
         n1: &pitch::NotePitch,
         n2: &pitch::NotePitch,
-    ) -> Option<DirectedSemitoneInterval> {
+    ) -> Result<DirectedSemitoneInterval, TryFromIntError> {
         let semis_from_only_octaves = (n2.octave() - n1.octave()) * 12;
         let semis_from_note_pitch_class = n2.class() as i32 - n1.class() as i32;
         let semis = semis_from_note_pitch_class + semis_from_only_octaves;
         if semis >= 0 {
-            Some(Self {
-                interval: SemitoneInterval::new(Semitones::try_from(semis).ok()?),
+            Ok(Self {
+                interval: SemitoneInterval::new(Semitones::try_from(semis)?),
                 direction: Direction::Up,
             })
         } else {
-            Some(Self {
-                interval: SemitoneInterval::new(Semitones::try_from(-semis).ok()?),
+            Ok(Self {
+                interval: SemitoneInterval::new(Semitones::try_from(-semis)?),
                 direction: Direction::Down,
             })
         }
@@ -93,7 +95,10 @@ impl DirectedSemitoneInterval {
     }
 
     #[must_use]
-    pub fn apply_to_note_pitch(&self, note_pitch: &pitch::NotePitch) -> Option<pitch::NotePitch> {
+    pub fn apply_to_note_pitch(
+        &self,
+        note_pitch: &pitch::NotePitch,
+    ) -> Result<pitch::NotePitch, ()> {
         let total_semitones = self.directional_semitones();
 
         // get octaves and semitones through division
@@ -105,9 +110,9 @@ impl DirectedSemitoneInterval {
 
         let fixed_octave = new_base_octave + (new_pitch_class_without_modulo / 12);
         let fixed_pitch_class: pitch::NotePitchClass =
-            (new_pitch_class_without_modulo % 12).try_into().unwrap();
+            (new_pitch_class_without_modulo % 12).try_into()?;
 
-        Some(pitch::NotePitch::new(fixed_pitch_class, fixed_octave))
+        Ok(pitch::NotePitch::new(fixed_pitch_class, fixed_octave))
     }
 }
 

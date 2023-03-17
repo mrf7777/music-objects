@@ -1,5 +1,7 @@
 #![deny(clippy::all, clippy::pedantic)]
 
+use std::num::TryFromIntError;
+
 use crate::interval;
 
 pub type Pitch = f64;
@@ -13,9 +15,9 @@ pub enum TuningSystem {
 
 #[allow(clippy::module_name_repetitions)]
 pub trait ToPitch {
-    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Option<Pitch>;
+    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Result<Pitch, TryFromIntError>;
 
-    fn to_pitch(&self) -> Option<Pitch> {
+    fn to_pitch(&self) -> Result<Pitch, TryFromIntError> {
         self.to_pitch_using_tuning(TuningSystem::EqualTempered)
     }
 }
@@ -83,7 +85,7 @@ impl NotePitch {
 }
 
 impl ToPitch for NotePitch {
-    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Option<Pitch> {
+    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Result<Pitch, TryFromIntError> {
         match tuning {
             TuningSystem::EqualTempered => {
                 let semitones_from_a4 = interval::DirectedSemitoneInterval::from_note_pitches(
@@ -96,7 +98,7 @@ impl ToPitch for NotePitch {
                 .directional_semitones();
 
                 // https://pages.mtu.edu/~suits/NoteFreqCalcs.html
-                Some(A4_PITCH_ISO_16 * EQUAL_TEMPERED_SEMITONE_FACTOR.powi(semitones_from_a4))
+                Ok(A4_PITCH_ISO_16 * EQUAL_TEMPERED_SEMITONE_FACTOR.powi(semitones_from_a4))
             }
         }
     }

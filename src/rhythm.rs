@@ -6,14 +6,19 @@ pub struct Ratio {
     denominator: u32,
 }
 
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub enum NewRatioError {
+    NumeratorOrDenominatorZero,
+}
+
 impl Ratio {
     #[must_use]
-    pub fn new(numerator: u32, denominator: u32) -> Option<Self> {
+    pub fn new(numerator: u32, denominator: u32) -> Result<Self, NewRatioError> {
         if numerator == 0 || denominator == 0 {
-            return None;
+            return Err(NewRatioError::NumeratorOrDenominatorZero);
         }
 
-        Some(Self {
+        Ok(Self {
             numerator,
             denominator,
         })
@@ -150,8 +155,8 @@ pub struct Duration {
 
 impl Duration {
     #[must_use]
-    pub fn new(numerator: u32, denominator: u32) -> Option<Self> {
-        Some(Self {
+    pub fn new(numerator: u32, denominator: u32) -> Result<Self, NewRatioError> {
+        Ok(Self {
             ratio: Ratio::new(numerator, denominator)?,
         })
     }
@@ -285,11 +290,11 @@ mod tests {
 
     #[test]
     fn rhythm_order() {
-        let duration1 = Duration::new(1, 4);
-        let duration2 = Duration::new(1, 3);
-        let duration3 = Duration::new(100, 3);
-        let duration4 = Duration::new(2, 8);
-        let duration5 = Duration::new(2, 6);
+        let duration1 = Duration::new(1, 4).unwrap();
+        let duration2 = Duration::new(1, 3).unwrap();
+        let duration3 = Duration::new(100, 3).unwrap();
+        let duration4 = Duration::new(2, 8).unwrap();
+        let duration5 = Duration::new(2, 6).unwrap();
 
         assert!(duration1 < duration2);
         assert!(duration2 > duration1);

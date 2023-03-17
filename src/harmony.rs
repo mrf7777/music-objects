@@ -93,11 +93,13 @@ pub struct ChordPattern {
 }
 
 impl ChordPattern {
-    #[must_use] pub fn new(intervals: BTreeSet<DirectedSemitoneInterval>) -> Self {
+    #[must_use]
+    pub fn new(intervals: BTreeSet<DirectedSemitoneInterval>) -> Self {
         Self { intervals }
     }
 
-    #[must_use] pub fn intervals(&self) -> &BTreeSet<DirectedSemitoneInterval> {
+    #[must_use]
+    pub fn intervals(&self) -> &BTreeSet<DirectedSemitoneInterval> {
         &self.intervals
     }
 }

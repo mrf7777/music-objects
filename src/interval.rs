@@ -6,7 +6,7 @@ pub type Semitones = u16;
 pub type DirectionalSemitones = i32;
 pub type Octave = i8;
 
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
 #[allow(clippy::module_name_repetitions)]
 pub struct SemitoneInterval {
     semitones: Semitones,
@@ -35,6 +35,27 @@ pub enum Direction {
 pub struct DirectedSemitoneInterval {
     interval: SemitoneInterval,
     direction: Direction,
+}
+
+impl Ord for DirectedSemitoneInterval {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        let self_semis = self.directional_semitones();
+        let other_semis = other.directional_semitones();
+
+        if self_semis < other_semis {
+            std::cmp::Ordering::Less
+        } else if self_semis > other_semis {
+            std::cmp::Ordering::Greater
+        } else {
+            std::cmp::Ordering::Equal
+        }
+    }
+}
+
+impl PartialOrd for DirectedSemitoneInterval {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 impl DirectedSemitoneInterval {

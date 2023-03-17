@@ -1,8 +1,11 @@
 #![deny(clippy::all, clippy::pedantic)]
 
-use std::collections::HashSet;
+use std::collections::{BTreeSet, HashSet};
 
-use crate::pitch;
+use crate::{
+    interval::DirectedSemitoneInterval,
+    pitch::{self, NotePitch},
+};
 
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct ChordClass {
@@ -81,5 +84,20 @@ impl RootedChord {
     #[must_use]
     pub fn root(&self) -> pitch::NotePitch {
         self.root
+    }
+}
+
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub struct ChordPattern {
+    intervals: BTreeSet<DirectedSemitoneInterval>,
+}
+
+impl ChordPattern {
+    pub fn new(intervals: BTreeSet<DirectedSemitoneInterval>) -> Self {
+        Self { intervals }
+    }
+
+    pub fn intervals(&self) -> &BTreeSet<DirectedSemitoneInterval> {
+        &self.intervals
     }
 }

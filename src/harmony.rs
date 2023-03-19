@@ -4,7 +4,11 @@ use std::collections::{BTreeSet, HashSet};
 
 use crate::{interval::DirectedSemitoneInterval, pitch};
 
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 #[derive(Clone, PartialEq, Eq, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ChordClass {
     note_pitch_classes: HashSet<pitch::NotePitchClass>,
 }
@@ -22,6 +26,7 @@ impl ChordClass {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct RootedChordClass {
     chord_class: ChordClass,
     root: pitch::NotePitchClass,
@@ -45,6 +50,7 @@ impl RootedChordClass {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Chord {
     note_pitches: BTreeSet<pitch::NotePitch>,
 }
@@ -62,6 +68,7 @@ impl Chord {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct RootedChord {
     chord: Chord,
     root: pitch::NotePitch,
@@ -85,6 +92,7 @@ impl RootedChord {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ChordPattern {
     intervals: BTreeSet<DirectedSemitoneInterval>,
 }

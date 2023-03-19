@@ -4,11 +4,15 @@ use std::num::TryFromIntError;
 
 use crate::pitch;
 
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 pub type Semitones = u16;
 pub type DirectionalSemitones = i32;
 pub type Octave = i32;
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[allow(clippy::module_name_repetitions)]
 pub struct SemitoneInterval {
     semitones: Semitones,
@@ -27,12 +31,14 @@ impl SemitoneInterval {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum Direction {
     Up,
     Down,
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[allow(clippy::module_name_repetitions)]
 pub struct DirectedSemitoneInterval {
     interval: SemitoneInterval,

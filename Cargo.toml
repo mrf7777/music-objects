@@ -8,5 +8,8 @@ repository = "https://github.com/mrf7777/music-objects"
 keywords = ["music", "western-music"]
 categories = ["data-structures"]
 
+[dependencies]
+serde = { version = "1.0", optional = true, features = ["derive"] }
+
 [dev-dependencies]
 version-sync = "0.9"

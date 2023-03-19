@@ -1,12 +1,17 @@
 #![deny(clippy::all, clippy::pedantic)]
 
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 #[derive(Clone, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Ratio {
     numerator: u32,
     denominator: u32,
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum NewRatioError {
     NumeratorOrDenominatorZero,
 }
@@ -70,6 +75,7 @@ impl Ord for Ratio {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct TimeSignature {
     ratio: Ratio,
 }
@@ -87,6 +93,7 @@ impl TimeSignature {
 }
 
 #[derive(Clone, Copy, PartialEq, Debug, PartialOrd)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Tempo {
     tempo_bpm: f64,
 }
@@ -124,6 +131,7 @@ impl Default for Tempo {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, PartialOrd, Ord)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct BeatAssignment {
     duration: Duration,
 }
@@ -148,6 +156,7 @@ impl BeatAssignment {
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, PartialOrd, Ord)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Duration {
     ratio: Ratio,
 }
@@ -183,6 +192,7 @@ impl Duration {
 }
 
 #[derive(Clone, PartialEq, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Rhythm {
     tempo: Tempo,
     beat_assignment: BeatAssignment,
@@ -215,6 +225,7 @@ impl Rhythm {
 }
 
 #[derive(Clone, PartialEq, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Metre {
     rhythm: Rhythm,
     time_signature: TimeSignature,

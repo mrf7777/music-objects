@@ -4,6 +4,9 @@ use std::{error::Error, fmt::Display, num::TryFromIntError};
 
 use crate::interval;
 
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 pub type Pitch = f64;
 
 #[derive(Clone, Copy, PartialEq, Default, Debug)]
@@ -25,6 +28,7 @@ pub trait ToPitch {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub enum NotePitchClass {
     C = 0,
     Cs = 1,
@@ -75,6 +79,7 @@ impl TryFrom<i32> for NotePitchClass {
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug, Hash)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 #[allow(clippy::module_name_repetitions)]
 pub struct NotePitch {
     class: NotePitchClass,

@@ -15,9 +15,11 @@ pub enum TuningSystem {
 
 #[allow(clippy::module_name_repetitions)]
 pub trait ToPitch {
-    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Result<Pitch, TryFromIntError>;
+    type Error;
 
-    fn to_pitch(&self) -> Result<Pitch, TryFromIntError> {
+    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Result<Pitch, Self::Error>;
+
+    fn to_pitch(&self) -> Result<Pitch, Self::Error> {
         self.to_pitch_using_tuning(TuningSystem::EqualTempered)
     }
 }
@@ -85,7 +87,9 @@ impl NotePitch {
 }
 
 impl ToPitch for NotePitch {
-    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Result<Pitch, TryFromIntError> {
+    type Error = TryFromIntError;
+
+    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Result<Pitch, Self::Error> {
         match tuning {
             TuningSystem::EqualTempered => {
                 let semitones_from_a4 = interval::DirectedSemitoneInterval::from_note_pitches(

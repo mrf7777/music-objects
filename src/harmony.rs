@@ -2,10 +2,7 @@
 
 use std::collections::{BTreeSet, HashSet};
 
-use crate::{
-    interval::DirectedSemitoneInterval,
-    pitch::{self},
-};
+use crate::{interval::DirectedSemitoneInterval, pitch};
 
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct ChordClass {
@@ -49,17 +46,17 @@ impl RootedChordClass {
 
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Chord {
-    note_pitches: HashSet<pitch::NotePitch>,
+    note_pitches: BTreeSet<pitch::NotePitch>,
 }
 
 impl Chord {
     #[must_use]
-    pub fn new(note_pitches: HashSet<pitch::NotePitch>) -> Self {
+    pub fn new(note_pitches: BTreeSet<pitch::NotePitch>) -> Self {
         Self { note_pitches }
     }
 
     #[must_use]
-    pub fn note_pitchs(&self) -> &HashSet<pitch::NotePitch> {
+    pub fn note_pitchs(&self) -> &BTreeSet<pitch::NotePitch> {
         &self.note_pitches
     }
 }

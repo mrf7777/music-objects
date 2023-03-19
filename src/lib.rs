@@ -1,4 +1,4 @@
-#![doc(html_root_url = "https://docs.rs/music-object/0.1.0")]
+#![doc(html_root_url = "https://docs.rs/music-objects/0.1.0")]
 
 pub mod composition;
 pub mod harmony;

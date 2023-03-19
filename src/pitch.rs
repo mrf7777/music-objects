@@ -98,6 +98,23 @@ impl NotePitch {
     }
 }
 
+impl Ord for NotePitch {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        let octave_compare = self.octave().cmp(&other.octave());
+        match octave_compare {
+            std::cmp::Ordering::Less => std::cmp::Ordering::Less,
+            std::cmp::Ordering::Greater => std::cmp::Ordering::Greater,
+            std::cmp::Ordering::Equal => (self.class() as i32).cmp(&(other.class() as i32)),
+        }
+    }
+}
+
+impl PartialOrd for NotePitch {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
 impl ToPitch for NotePitch {
     type Error = TryFromIntError;
 

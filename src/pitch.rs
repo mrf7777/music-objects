@@ -1,6 +1,6 @@
 #![deny(clippy::all, clippy::pedantic)]
 
-use std::num::TryFromIntError;
+use std::{error::Error, fmt::Display, num::TryFromIntError};
 
 use crate::interval;
 
@@ -40,8 +40,20 @@ pub enum NotePitchClass {
     B = 11,
 }
 
+#[derive(Clone, Copy, Debug)]
+pub struct IntDoesNotMatchEnum;
+
+impl Display for IntDoesNotMatchEnum {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("integer does not map to an enumeration value")?;
+        Ok(())
+    }
+}
+
+impl Error for IntDoesNotMatchEnum {}
+
 impl TryFrom<i32> for NotePitchClass {
-    type Error = ();
+    type Error = IntDoesNotMatchEnum;
 
     fn try_from(value: i32) -> Result<Self, Self::Error> {
         match value {
@@ -57,7 +69,7 @@ impl TryFrom<i32> for NotePitchClass {
             9 => Ok(Self::A),
             10 => Ok(Self::As),
             11 => Ok(Self::B),
-            _ => Err(()),
+            _ => Err(IntDoesNotMatchEnum),
         }
     }
 }

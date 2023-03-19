@@ -63,7 +63,6 @@ impl DirectedSemitoneInterval {
         }
     }
 
-    #[must_use]
     pub fn from_note_pitches(
         n1: &pitch::NotePitch,
         n2: &pitch::NotePitch,
@@ -102,11 +101,10 @@ impl DirectedSemitoneInterval {
         self.direction
     }
 
-    #[must_use]
     pub fn apply_to_note_pitch(
         &self,
         note_pitch: &pitch::NotePitch,
-    ) -> Result<pitch::NotePitch, ()> {
+    ) -> Result<pitch::NotePitch, pitch::IntDoesNotMatchEnum> {
         let total_semitones = self.directional_semitones();
 
         // get octaves and semitones through division
@@ -117,8 +115,8 @@ impl DirectedSemitoneInterval {
         let new_pitch_class_without_modulo = note_pitch.class() as i32 + semitones;
 
         let fixed_octave = new_base_octave + (new_pitch_class_without_modulo / 12);
-        let fixed_pitch_class: pitch::NotePitchClass =
-            (new_pitch_class_without_modulo % 12).try_into()?;
+        let fixed_pitch_class =
+            pitch::NotePitchClass::try_from(new_pitch_class_without_modulo % 12)?;
 
         Ok(pitch::NotePitch::new(fixed_pitch_class, fixed_octave))
     }

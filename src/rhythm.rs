@@ -12,7 +12,6 @@ pub enum NewRatioError {
 }
 
 impl Ratio {
-    #[must_use]
     pub fn new(numerator: u32, denominator: u32) -> Result<Self, NewRatioError> {
         if numerator == 0 || denominator == 0 {
             return Err(NewRatioError::NumeratorOrDenominatorZero);
@@ -154,7 +153,6 @@ pub struct Duration {
 }
 
 impl Duration {
-    #[must_use]
     pub fn new(numerator: u32, denominator: u32) -> Result<Self, NewRatioError> {
         Ok(Self {
             ratio: Ratio::new(numerator, denominator)?,

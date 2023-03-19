@@ -7,3 +7,6 @@ license = "MIT"
 repository = "https://github.com/mrf7777/music-objects"
 keywords = ["music", "western-music"]
 categories = ["data-structures"]
+
+[dev-dependencies]
+version-sync = "0.9"

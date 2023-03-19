@@ -56,6 +56,14 @@ impl PartialOrd for DirectedSemitoneInterval {
 
 impl DirectedSemitoneInterval {
     #[must_use]
+    pub fn new(semitones: SemitoneInterval, direction: Direction) -> Self {
+        Self {
+            interval: semitones,
+            direction,
+        }
+    }
+
+    #[must_use]
     pub fn from_note_pitches(
         n1: &pitch::NotePitch,
         n2: &pitch::NotePitch,
@@ -167,5 +175,45 @@ mod tests {
         let interval4 = DirectedSemitoneInterval::from_note_pitches(&d5, &c4).unwrap();
         assert_eq!(interval4.direction, Direction::Down);
         assert_eq!(interval4.interval, SemitoneInterval { semitones: 14 });
+    }
+
+    #[test]
+    fn apply_interval_to_note_pitch_single_octave() {
+        let interval1 = DirectedSemitoneInterval::new(SemitoneInterval::new(4), Direction::Up);
+        let interval2 = DirectedSemitoneInterval::new(SemitoneInterval::new(3), Direction::Up);
+        let interval3 =
+            DirectedSemitoneInterval::new(interval1.interval().clone(), Direction::Down);
+        let interval4 =
+            DirectedSemitoneInterval::new(interval2.interval().clone(), Direction::Down);
+
+        let note1 = NotePitch::new(NotePitchClass::C, 4);
+        let note2 = NotePitch::new(NotePitchClass::E, 4);
+        let note3 = NotePitch::new(NotePitchClass::G, 4);
+
+        assert_eq!(interval1.apply_to_note_pitch(&note1).unwrap(), note2);
+        assert_eq!(interval2.apply_to_note_pitch(&note2).unwrap(), note3);
+
+        assert_eq!(interval3.apply_to_note_pitch(&note2).unwrap(), note1);
+        assert_eq!(interval4.apply_to_note_pitch(&note3).unwrap(), note2);
+    }
+
+    #[test]
+    fn apply_interval_to_note_pitch_multi_octave() {
+        let interval1 = DirectedSemitoneInterval::new(SemitoneInterval::new(14), Direction::Up);
+        let interval2 = DirectedSemitoneInterval::new(SemitoneInterval::new(26), Direction::Up);
+        let interval3 =
+            DirectedSemitoneInterval::new(interval1.interval().clone(), Direction::Down);
+        let interval4 =
+            DirectedSemitoneInterval::new(interval2.interval().clone(), Direction::Down);
+
+        let note1 = NotePitch::new(NotePitchClass::C, 4);
+        let note2 = NotePitch::new(NotePitchClass::D, 5);
+        let note3 = NotePitch::new(NotePitchClass::D, 6);
+
+        assert_eq!(interval1.apply_to_note_pitch(&note1).unwrap(), note2);
+        assert_eq!(interval2.apply_to_note_pitch(&note1).unwrap(), note3);
+
+        assert_eq!(interval3.apply_to_note_pitch(&note2).unwrap(), note1);
+        assert_eq!(interval4.apply_to_note_pitch(&note3).unwrap(), note1);
     }
 }

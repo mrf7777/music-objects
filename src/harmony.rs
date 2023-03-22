@@ -1,5 +1,3 @@
-#![deny(clippy::all, clippy::pedantic)]
-
 use std::collections::{BTreeSet, HashSet};
 
 use crate::{interval::DirectedSemitoneInterval, pitch};

@@ -1,5 +1,3 @@
-#![deny(clippy::all, clippy::pedantic)]
-
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 

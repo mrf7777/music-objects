@@ -1,5 +1,3 @@
-#![deny(clippy::all, clippy::pedantic)]
-
 use std::collections::BTreeMap;
 
 use crate::rhythm;

@@ -1,6 +1,6 @@
 #![deny(clippy::all)]
 #![warn(clippy::pedantic)]
-#![warn(missing_docs)]
+//#![warn(missing_docs)]
 #![doc(html_root_url = "https://docs.rs/music-objects/0.1.0")]
 
 //! Complete western music theory library.

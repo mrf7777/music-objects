@@ -12,6 +12,7 @@ pub struct Note {
 }
 
 impl Note {
+    #[must_use]
     pub fn new(note_pitch: pitch::NotePitch, duration: rhythm::Duration) -> Self {
         Self {
             note_pitch,
@@ -19,10 +20,12 @@ impl Note {
         }
     }
 
+    #[must_use]
     pub fn note_pitch(&self) -> &pitch::NotePitch {
         &self.note_pitch
     }
 
+    #[must_use]
     pub fn duration(&self) -> &rhythm::Duration {
         &self.duration
     }

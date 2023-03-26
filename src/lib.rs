@@ -10,16 +10,22 @@
 //! This lets you describe harmony and rhythm respectively.
 //!
 //! # Example
-//!
+//! 
 //! ```rust,editable
-//! use music_objects::{pitch, interval};
+//! use music_objects::{
+//!     pitch::{
+//!         NotePitch,
+//!         NotePitchClass,
+//!     },
+//!     interval::SemitoneInterval,
+//! };
 //!
 //! fn main() {
-//!     let middle_c = pitch::NotePitch::new(pitch::NotePitchClass::C, 4);
-//!     let e4 = pitch::NotePitch::new(pitch::NotePitchClass::E, 4);
-//!     let major_3rd_up = interval::DirectedSemitoneInterval::new(interval::SemitoneInterval::new(4), interval::Direction::Up);
+//!     let middle_c = NotePitch::new(NotePitchClass::C, 4);
+//!     let e4 = NotePitch::new(NotePitchClass::E, 4);
+//!     let major_3rd_up = SemitoneInterval::new(4);
 //!
-//!     assert_eq!(major_3rd_up.apply_to_note_pitch(&middle_c).unwrap(), e4);
+//!     assert_eq!(major_3rd_up.apply_to_note_pitch(&middle_c), e4);
 //! }
 //! ```
 //!

@@ -1,6 +1,6 @@
 use std::collections::{BTreeSet, HashSet};
 
-use crate::{interval::DirectedSemitoneInterval, pitch};
+use crate::{interval::SemitoneInterval, pitch};
 
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
@@ -92,17 +92,17 @@ impl RootedChord {
 #[derive(Clone, PartialEq, Eq, Debug)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ChordPattern {
-    intervals: BTreeSet<DirectedSemitoneInterval>,
+    intervals: BTreeSet<SemitoneInterval>,
 }
 
 impl ChordPattern {
     #[must_use]
-    pub fn new(intervals: BTreeSet<DirectedSemitoneInterval>) -> Self {
+    pub fn new(intervals: BTreeSet<SemitoneInterval>) -> Self {
         Self { intervals }
     }
 
     #[must_use]
-    pub fn intervals(&self) -> &BTreeSet<DirectedSemitoneInterval> {
+    pub fn intervals(&self) -> &BTreeSet<SemitoneInterval> {
         &self.intervals
     }
 }

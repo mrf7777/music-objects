@@ -1,5 +1,3 @@
-use std::num::TryFromIntError;
-
 use crate::pitch;
 
 #[cfg(feature = "serde")]

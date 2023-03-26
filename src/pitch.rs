@@ -1,4 +1,4 @@
-use std::{error::Error, fmt::Display, num::TryFromIntError};
+use std::{error::Error, fmt::Display};
 
 use crate::interval;
 
@@ -16,11 +16,9 @@ pub enum TuningSystem {
 
 #[allow(clippy::module_name_repetitions)]
 pub trait ToPitch {
-    type Error;
+    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Pitch;
 
-    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Result<Pitch, Self::Error>;
-
-    fn to_pitch(&self) -> Result<Pitch, Self::Error> {
+    fn to_pitch(&self) -> Pitch {
         self.to_pitch_using_tuning(TuningSystem::EqualTempered)
     }
 }
@@ -119,22 +117,20 @@ impl PartialOrd for NotePitch {
 }
 
 impl ToPitch for NotePitch {
-    type Error = TryFromIntError;
-
-    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Result<Pitch, Self::Error> {
+    fn to_pitch_using_tuning(&self, tuning: TuningSystem) -> Pitch {
         match tuning {
             TuningSystem::EqualTempered => {
-                let semitones_from_a4 = interval::DirectedSemitoneInterval::from_note_pitches(
+                let semitones_from_a4 = interval::SemitoneInterval::new_from_note_pitches(
                     &NotePitch {
                         class: NotePitchClass::A,
                         octave: 4,
                     },
                     self,
-                )?
-                .directional_semitones();
+                )
+                .semitones();
 
                 // https://pages.mtu.edu/~suits/NoteFreqCalcs.html
-                Ok(A4_PITCH_ISO_16 * EQUAL_TEMPERED_SEMITONE_FACTOR.powi(semitones_from_a4))
+                A4_PITCH_ISO_16 * EQUAL_TEMPERED_SEMITONE_FACTOR.powi(semitones_from_a4)
             }
         }
     }
@@ -155,19 +151,19 @@ mod tests {
             class: NotePitchClass::A,
             octave: 4,
         };
-        assert!((a440.to_pitch().unwrap() - 440.00).abs() < 0.05);
+        assert!((a440.to_pitch() - 440.00).abs() < 0.05);
 
         let a220 = NotePitch {
             class: NotePitchClass::A,
             octave: 3,
         };
-        assert!((a220.to_pitch().unwrap() - 220.00).abs() < 0.05);
+        assert!((a220.to_pitch() - 220.00).abs() < 0.05);
 
         let a880 = NotePitch {
             class: NotePitchClass::A,
             octave: 5,
         };
-        assert!((a880.to_pitch().unwrap() - 880.00).abs() < 0.05);
+        assert!((a880.to_pitch() - 880.00).abs() < 0.05);
     }
 
     #[test]
@@ -176,18 +172,18 @@ mod tests {
             class: NotePitchClass::C,
             octave: 4,
         };
-        assert!((c4.to_pitch().unwrap() - 261.63).abs() < 0.05);
+        assert!((c4.to_pitch() - 261.63).abs() < 0.05);
 
         let c3 = NotePitch {
             class: NotePitchClass::C,
             octave: 3,
         };
-        assert!((c3.to_pitch().unwrap() - 130.81).abs() < 0.05);
+        assert!((c3.to_pitch() - 130.81).abs() < 0.05);
 
         let gs8 = NotePitch {
             class: NotePitchClass::Gs,
             octave: 8,
         };
-        assert!((gs8.to_pitch().unwrap() - 6644.88).abs() < 0.05);
+        assert!((gs8.to_pitch() - 6644.88).abs() < 0.05);
     }
 }

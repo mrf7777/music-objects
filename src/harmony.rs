@@ -60,7 +60,7 @@ impl Chord {
     }
 
     #[must_use]
-    pub fn note_pitchs(&self) -> &BTreeSet<pitch::NotePitch> {
+    pub fn note_pitches(&self) -> &BTreeSet<pitch::NotePitch> {
         &self.note_pitches
     }
 }

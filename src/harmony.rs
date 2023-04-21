@@ -30,10 +30,20 @@ pub struct RootedChordClass {
     root: pitch::NotePitchClass,
 }
 
+pub enum NewChordError {
+    RootNotInChordClass,
+}
+
 impl RootedChordClass {
     #[must_use]
-    pub fn new(chord_class: ChordClass, root: pitch::NotePitchClass) -> Self {
-        Self { chord_class, root }
+    pub fn new(
+        chord_class: ChordClass,
+        root: pitch::NotePitchClass,
+    ) -> Result<Self, NewChordError> {
+        if !chord_class.note_pitch_classes.contains(&root) {
+            return Err(NewChordError::RootNotInChordClass);
+        }
+        Ok(Self { chord_class, root })
     }
 
     #[must_use]
@@ -74,8 +84,11 @@ pub struct RootedChord {
 
 impl RootedChord {
     #[must_use]
-    pub fn new(chord: Chord, root: pitch::NotePitch) -> Self {
-        Self { chord, root }
+    pub fn new(chord: Chord, root: pitch::NotePitch) -> Result<Self, NewChordError> {
+        if !chord.note_pitches().contains(&root) {
+            return Err(NewChordError::RootNotInChordClass);
+        }
+        Ok(Self { chord, root })
     }
 
     #[must_use]
@@ -89,7 +102,7 @@ impl RootedChord {
     }
 }
 
-#[derive(Clone, PartialEq, Eq, Debug)]
+#[derive(Clone, PartialEq, Eq, Debug, Default)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ChordPattern {
     intervals: BTreeSet<SemitoneInterval>,

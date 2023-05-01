@@ -31,7 +31,7 @@ pub struct RootedChordClass {
 }
 
 pub enum NewChordError {
-    RootNotInChordClass,
+    RootNotInChord,
 }
 
 impl RootedChordClass {
@@ -41,7 +41,7 @@ impl RootedChordClass {
         root: pitch::NotePitchClass,
     ) -> Result<Self, NewChordError> {
         if !chord_class.note_pitch_classes.contains(&root) {
-            return Err(NewChordError::RootNotInChordClass);
+            return Err(NewChordError::RootNotInChord);
         }
         Ok(Self { chord_class, root })
     }
@@ -86,7 +86,7 @@ impl RootedChord {
     #[must_use]
     pub fn new(chord: Chord, root: pitch::NotePitch) -> Result<Self, NewChordError> {
         if !chord.note_pitches().contains(&root) {
-            return Err(NewChordError::RootNotInChordClass);
+            return Err(NewChordError::RootNotInChord);
         }
         Ok(Self { chord, root })
     }

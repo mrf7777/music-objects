@@ -5,6 +5,12 @@ use crate::{interval::SemitoneInterval, pitch};
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
 
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
+pub enum NewChordError {
+    RootNotInChord,
+}
+
 #[derive(Clone, PartialEq, Eq, Debug)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct ChordClass {
@@ -28,10 +34,6 @@ impl ChordClass {
 pub struct RootedChordClass {
     chord_class: ChordClass,
     root: pitch::NotePitchClass,
-}
-
-pub enum NewChordError {
-    RootNotInChord,
 }
 
 impl RootedChordClass {
